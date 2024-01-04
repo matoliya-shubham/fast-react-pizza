@@ -15,10 +15,11 @@ export default function Applayout() {
       <div className="overflow-scroll">
         <main className="mx-auto max-w-3xl">
           <h1>Content</h1>
-          <Outlet />
+          <Outlet /> 
         </main>
       </div>
       <CartOverview />
     </div>
   );
 }
+//outlet used to render children array of Applayout

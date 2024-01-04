@@ -100,8 +100,9 @@ function CreateOrder() {
 }
 
 export async function action({ request }) {
-  const formData = await request.formData();
+  const formData = await request.formData(); //give {}
   const data = Object.fromEntries(formData); // to convert it to JS object
+  
   const order = {
     ...data,
     cart: JSON.parse(data.cart),
