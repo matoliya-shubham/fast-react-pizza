@@ -1,17 +1,19 @@
 // Test ID: IIDSAT
 
-import { useLoaderData } from "react-router";
-import { getOrder } from "../../services/apiRestaurant";
+import OrderItem from './OrderItem';
+
+import { useLoaderData } from 'react-router-dom';
+import { getOrder } from '../../services/apiRestaurant';
 import {
   calcMinutesLeft,
   formatCurrency,
   formatDate,
-} from "../../utils/helpers";
-import OrderItem from "./OrderItem";
+} from '../../utils/helpers';
 
 function Order() {
-  // Everyone can search for all orders, so for privacy reasons we're gonna gonna exclude names or address, these are only for the restaurant staff
   const order = useLoaderData();
+
+  // Everyone can search for all orders, so for privacy reasons we're gonna gonna exclude names or address, these are only for the restaurant staff
   const {
     id,
     status,
@@ -21,12 +23,13 @@ function Order() {
     estimatedDelivery,
     cart,
   } = order;
+
   const deliveryIn = calcMinutesLeft(estimatedDelivery);
 
   return (
-    <div className="space-y-8 px-4 py-5">
+    <div className="space-y-8 px-4 py-6">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-xl font-semibold">Order #{id} Status</h2>
+        <h2 className="text-xl font-semibold">Order #{id} status</h2>
 
         <div className="space-x-2">
           {priority && (
@@ -44,16 +47,16 @@ function Order() {
         <p className="font-medium">
           {deliveryIn >= 0
             ? `Only ${calcMinutesLeft(estimatedDelivery)} minutes left 😃`
-            : "Order should have arrived"}
+            : 'Order should have arrived'}
         </p>
         <p className="text-xs text-stone-500">
           (Estimated delivery: {formatDate(estimatedDelivery)})
         </p>
       </div>
 
-      <ul className="divide-y divide-stone-200 border-b border-t">
+      <ul className="dive-stone-200 divide-y border-b border-t">
         {cart.map((item) => (
-          <OrderItem item={item} key={item.key} />
+          <OrderItem item={item} key={item.id} />
         ))}
       </ul>
 
@@ -61,7 +64,11 @@ function Order() {
         <p className="text-sm font-medium text-stone-600">
           Price pizza: {formatCurrency(orderPrice)}
         </p>
-        {priority && <p>Price priority: {formatCurrency(priorityPrice)}</p>}
+        {priority && (
+          <p className="text-sm font-medium text-stone-600">
+            Price priority: {formatCurrency(priorityPrice)}
+          </p>
+        )}
         <p className="font-bold">
           To pay on delivery: {formatCurrency(orderPrice + priorityPrice)}
         </p>
@@ -70,9 +77,9 @@ function Order() {
   );
 }
 
-//we can not use useparams hook outside react component hence we use the params accepted by loader as argument to get params
 export async function loader({ params }) {
   const order = await getOrder(params.orderId);
   return order;
 }
+
 export default Order;
