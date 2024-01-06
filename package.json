@@ -9,8 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-redux": "^9.0.4",
     "react-router-dom": "^6.11.0"
   },
   "devDependencies": {
@@ -21,7 +23,7 @@
     "eslint": "^8.39.0",
     "eslint-config-react-app": "^7.0.1",
     "postcss": "^8.4.23",
-    "prettier": "^2.8.8",
+    "prettier": "2.8.8",
     "prettier-plugin-tailwindcss": "^0.2.8",
     "tailwindcss": "^3.3.2",
     "vite": "^4.2.0",
