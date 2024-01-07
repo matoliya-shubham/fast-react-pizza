@@ -2,16 +2,27 @@
 
 import OrderItem from './OrderItem';
 
-import { useLoaderData } from 'react-router-dom';
+import { useFetcher, useLoaderData } from 'react-router-dom';
 import { getOrder } from '../../services/apiRestaurant';
 import {
   calcMinutesLeft,
   formatCurrency,
   formatDate,
 } from '../../utils/helpers';
+import { useEffect } from 'react';
+import UpdateOrder from './UpdateOrder';
 
 function Order() {
   const order = useLoaderData();
+
+  const fetcher = useFetcher()
+  //we want to fetch menu page data when page loads
+
+  useEffect(function(){
+    //fetcher has idle, loading, reject state
+    if(!fetcher.data && fetcher.state === 'idle')
+    fetcher.load('/menu')
+  },[fetcher])
 
   // Everyone can search for all orders, so for privacy reasons we're gonna gonna exclude names or address, these are only for the restaurant staff
   const {
@@ -56,7 +67,7 @@ function Order() {
 
       <ul className="dive-stone-200 divide-y border-b border-t">
         {cart.map((item) => (
-          <OrderItem item={item} key={item.pizzaId} />
+          <OrderItem item={item} key={item.pizzaId} isLoadingIngredients={fetcher.state === 'loading'} ingredients={fetcher?.data?.find(el=>el.id===item.pizzaId)?.ingredients ?? []}/>
         ))}
       </ul>
 
@@ -73,6 +84,9 @@ function Order() {
           To pay on delivery: {formatCurrency(orderPrice + priorityPrice)}
         </p>
       </div>
+      {
+        !priority && <UpdateOrder order={order}/>
+      }
     </div>
   );
 }
@@ -83,3 +97,7 @@ export async function loader({ params }) {
 }
 
 export default Order;
+
+// sometimes we need to fetch some data from another route, so basically data that is not associated with this current page right here, but we want to do that without causing a navigation sometimes. 
+//So, for example, let's say that here in the order page, we wanted to load the menu data again, and we already wrote all the logic for fetching exactly that data, but it is associated to another route. 
+//So, to the menu route and not to this one, but still we want to use it here, because there is no point in writing that logic again. So, in other words, what we want to do is to use the data from the menu route, but without the user actually going there. And, so, for that, we can use the useFetcher hook.
